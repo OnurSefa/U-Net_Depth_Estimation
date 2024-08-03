@@ -60,8 +60,8 @@ def save_normalization_factors(train_path, out_dir):
     image_count = 0
     image_means = torch.zeros((1, 3, 480, 640))
     image_stds = torch.zeros((1, 3, 480, 640))
-    depth_means = torch.zeros((1, 3, 480, 640))
-    depth_stds = torch.zeros((1, 3, 480, 640))
+    depth_means = torch.zeros((1, 1, 480, 640))
+    depth_stds = torch.zeros((1, 1, 480, 640))
     for i, data in enumerate(data_loader):
         images, depths = data
         images = images.float()
@@ -84,12 +84,12 @@ def save_normalization_factors(train_path, out_dir):
 
 if __name__ == '__main__':
     # split_data('data/nyu2_train.csv', 'data/train_names.json', 'data/test_names.json', 4000)
-    # save_normalization_factors('data/train_names.json', 'data')
-    normalizer_image = Normalizer('data/image_means.pth', 'data/image_stds.pth')
-    normalizer_depth = Normalizer('data/depth_means.pth', 'data/depth_stds.pth')
-    dataset = DepthDataset('data/train_names.json', normalizer_image.normalize, normalizer_depth.normalize)
-    data_loader = DataLoader(dataset, batch_size=32, shuffle=True)
-    for i, data in enumerate(data_loader):
-        print('a')
+    save_normalization_factors('data/train_names.json', 'data')
+    # normalizer_image = Normalizer('data/image_means.pth', 'data/image_stds.pth')
+    # normalizer_depth = Normalizer('data/depth_means.pth', 'data/depth_stds.pth')
+    # dataset = DepthDataset('data/train_names.json', normalizer_image.normalize, normalizer_depth.normalize)
+    # data_loader = DataLoader(dataset, batch_size=32, shuffle=True)
+    # for i, data in enumerate(data_loader):
+    #     print('a')
 
 
