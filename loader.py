@@ -16,9 +16,10 @@ class Normalizer:
 
 
 class DepthDataset(Dataset):
-    def __init__(self, names_path, image_transform=None, depth_transform=None):
+    def __init__(self, names_path, image_transform=None, depth_transform=None, device=None):
         self.image_transform = image_transform
         self.depth_transform = depth_transform
+        self.device = device
 
         with open(names_path, 'r') as f:
             self.names = json.load(f)['names']
@@ -34,6 +35,9 @@ class DepthDataset(Dataset):
         depth = read_image(depth_path, ImageReadMode.GRAY)
         if self.depth_transform:
             depth = self.depth_transform(depth)
+        if self.device:
+            image = image.to(self.device)
+            depth = depth.to(self.device)
         return image, depth
 
 
