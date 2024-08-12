@@ -14,12 +14,16 @@ class Normalizer:
     def normalize(self, im):
         return (im - self.means) / self.stds
 
+    def denormalize(self, im):
+        return im * self.stds + self.means
+
 
 class DepthDataset(Dataset):
-    def __init__(self, names_path, image_transform=None, depth_transform=None, device=None):
+    def __init__(self, names_path, image_transform=None, depth_transform=None, device=None, with_names=False):
         self.image_transform = image_transform
         self.depth_transform = depth_transform
         self.device = device
+        self.with_names = with_names
 
         with open(names_path, 'r') as f:
             self.names = json.load(f)['names']
@@ -38,6 +42,10 @@ class DepthDataset(Dataset):
         if self.device:
             image = image.to(self.device)
             depth = depth.to(self.device)
+        image = image / 255
+        depth = depth / torch.max(depth)
+        if self.with_names:
+            return image, depth, image_path
         return image, depth
 
 

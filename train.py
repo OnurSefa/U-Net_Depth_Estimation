@@ -18,10 +18,11 @@ def train(model, optimizer, loss_function, epoch_count, model_dir, model_prefix,
     model = model.to(device)
     model.train()
 
-    normalizer_image = Normalizer(normalizer_paths[0], normalizer_paths[1])
-    normalizer_depth = Normalizer(normalizer_paths[2], normalizer_paths[3])
-    dataset = DepthDataset(image_names_path, normalizer_image.normalize, normalizer_depth.normalize, device)
+    dataset = DepthDataset(image_names_path, device=device)
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
+
+    save_loss = 0
+    save_iteration = 0
 
     for epoch in range(epoch_count):
         for i, data in enumerate(data_loader):
@@ -33,19 +34,25 @@ def train(model, optimizer, loss_function, epoch_count, model_dir, model_prefix,
             optimizer.step()
 
             print(f'{epoch} - {i} - loss: {loss.item():.4f}')
+            save_loss += loss.item()
+            save_iteration += 1
             if i % save_interval == 0:
                 torch.save(model, f'{model_dir}/{model_prefix}_{epoch}_{i}.pth')
+                print(f"SAVE LOSS {epoch} - {i}: {save_loss/save_iteration}")
+                save_loss = 0
+                save_iteration = 0
+                print()
 
 
 if __name__ == '__main__':
     m = UNet()
-    learning_rate = 0.002
+    learning_rate = 0.1
     optim = o.Adam(m.parameters(), lr=learning_rate)
     lf = depth_loss
     ec = 10
     md = 'models'
-    mp = '000'
-    si = 10
+    mp = '001'
+    si = 30
     bs = 16
     im_names_path = 'data/train_names.json'
     norm_paths = ['data/image_means.pth', 'data/image_stds.pth', 'data/depth_means.pth', 'data/depth_stds.pth']

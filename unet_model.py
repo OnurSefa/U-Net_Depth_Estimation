@@ -87,5 +87,7 @@ class UNet(nn.Module):
         x = self.up2(x, x2)
         x = self.up3(x, x1)
         x = self.out(x)
+        x = x - torch.min(x.view(x.size(0), -1))
+        x = x / torch.max(x.view(x.size(0), -1))
         return x
 
