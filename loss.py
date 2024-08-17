@@ -2,24 +2,20 @@ import torch
 import torch.nn.functional as F
 
 
-def depth_loss(y_true, y_pred, theta=0.1, max_depth_val=1):
+def depth_loss(y_true, y_pred, alpha=0., beta=0., theta=0., max_depth_val=1.):
     # point-wise depth
     l_depth = torch.mean(torch.abs(y_true - y_pred))
 
     # edge loss
-    # dy_true, dx_true = image_gradients(y_true)
-    # dy_pred, dx_pred = image_gradients(y_pred)
-    # l_edges = torch.mean(torch.abs(dy_pred - dy_true) + torch.abs(dx_pred - dx_true))
+    dy_true, dx_true = image_gradients(y_true)
+    dy_pred, dx_pred = image_gradients(y_pred)
+    l_edges = torch.mean(torch.abs(dy_pred - dy_true) + torch.abs(dx_pred - dx_true))
 
     # SSIM
-    # l_ssim = torch.mean(torch.clamp((1 - ssim(y_true, y_pred, max_depth_val)) * 0.5, 0, 1))
+    l_ssim = torch.mean(torch.clamp((1 - ssim(y_true, y_pred, max_depth_val)) * 0.5, 0, 1))
 
-    # w0 = theta
-    # w1 = 1.0
-    # w2 = 1.0
 
-    # return (w0 * l_depth) + (w1 * l_edges) + (w2 * l_ssim)
-    return l_depth
+    return (alpha * l_depth) + (beta * l_edges) + (theta * l_ssim)
 
 
 def image_gradients(x):
