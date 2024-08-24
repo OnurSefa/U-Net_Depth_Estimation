@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torchvision.models import densenet169
 
 
 class DoubleConv(nn.Module):
@@ -35,11 +36,11 @@ class Down(nn.Module):
 
 
 class Up(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size=2, stride=2, padding=0):
+    def __init__(self, in_channels, mid_channels, out_channels, kernel_size=2, stride=2, padding=0):
         super().__init__()
 
-        self.up = nn.ConvTranspose2d(in_channels, in_channels // 2, kernel_size=kernel_size, stride=stride, padding=padding)
-        self.conv = DoubleConv(in_channels, out_channels)
+        self.up = nn.ConvTranspose2d(in_channels, in_channels, kernel_size=kernel_size, stride=stride, padding=padding)
+        self.conv = DoubleConv(mid_channels, out_channels)
 
     def forward(self, x1, x2):
         x1 = self.up(x1)
@@ -65,29 +66,27 @@ class UNet(nn.Module):
     def __init__(self):
         super(UNet, self).__init__()
 
-        self.down0 = DoubleConv(3, 64)
-        self.down1 = Down(64, 128)
-        self.down2 = Down(128, 256)
-        self.down3 = Down(256, 512)
-        self.down4 = Down(512, 1024)
-        self.up0 = Up(1024, 512)
-        self.up1 = Up(512, 256)
-        self.up2 = Up(256, 128)
-        self.up3 = Up(128, 64)
-        self.out = OutConv(64, 1)
+        self.densenet = densenet169(pretrained=True)
+        self.encoder = nn.Sequential(*list(self.densenet.features.children()))
+        self.encoder.eval()
+        self.up0 = Up(1664, 1920,832)
+        self.up1 = Up(832, 960, 416)
+        self.up2 = Up(416, 480, 208)
+        self.up3 = Up(208, 272, 104)
+        self.out = OutConv(104, 1)
 
     def forward(self, x):
-        x1 = self.down0(x)
-        x2 = self.down1(x1)
-        x3 = self.down2(x2)
-        x4 = self.down3(x3)
-        x5 = self.down4(x4)
-        x = self.up0(x5, x4)
-        x = self.up1(x, x3)
-        x = self.up2(x, x2)
-        x = self.up3(x, x1)
+        features = []
+        with torch.no_grad():
+            for i, module in enumerate(self.encoder):
+                x = module(x)
+                if i in [0, 3, 5, 7]:
+                    features.append(x)
+        x = self.up0(x, features[3])
+        x = self.up1(x, features[2])
+        x = self.up2(x, features[1])
+        x = self.up3(x, features[0])
         x = self.out(x)
         x = x - torch.min(x.view(x.size(0), -1))
         x = x / torch.max(x.view(x.size(0), -1))
         return x
-

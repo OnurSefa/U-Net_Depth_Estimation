@@ -1,9 +1,11 @@
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
 from torchvision.io import read_image, ImageReadMode
+from torchvision.transforms.functional import pil_to_tensor
 import random
 import json
 import torch
+from PIL import Image
 
 
 class Normalizer:
@@ -19,11 +21,12 @@ class Normalizer:
 
 
 class DepthDataset(Dataset):
-    def __init__(self, names_path, image_transform=None, depth_transform=None, device=None, with_names=False):
-        self.image_transform = image_transform
-        self.depth_transform = depth_transform
+    def __init__(self, names_path, device=None, with_names=False):
         self.device = device
         self.with_names = with_names
+
+        self.mean_normalizers = torch.tensor([0.485, 0.456, 0.406])
+        self.std_normalizers = torch.tensor([0.229, 0.224, 0.225])
 
         with open(names_path, 'r') as f:
             self.names = json.load(f)['names']
@@ -33,17 +36,15 @@ class DepthDataset(Dataset):
 
     def __getitem__(self, idx):
         image_path, depth_path = self.names[idx]
-        image = read_image(image_path, ImageReadMode.RGB)
-        if self.image_transform:
-            image = self.image_transform(image)
-        depth = read_image(depth_path, ImageReadMode.GRAY)
-        if self.depth_transform:
-            depth = self.depth_transform(depth)
+        image = read_image(image_path, ImageReadMode.RGB)[:, 10:-10, 10:-10]
+        image = ((image / 255) - self.mean_normalizers[:, None, None]) / self.std_normalizers[:, None, None]
+        depth_image = Image.open(depth_path).convert('L')
+        depth_image = depth_image.resize((depth_image.size[0]//2, depth_image.size[1]//2))
+        depth = pil_to_tensor(depth_image)[:, 5:-5, 5:-5]
+        depth = ((depth - torch.min(depth)) / (torch.max(depth) - torch.min(depth)))
         if self.device:
             image = image.to(self.device)
             depth = depth.to(self.device)
-        image = (image / 255)[:, 10:-10, 10:-10]
-        depth = ((depth - torch.min(depth)) / (torch.max(depth) - torch.min(depth)))[:, 10:-10, 10:-10]
         if self.with_names:
             return image, depth, image_path
         return image, depth

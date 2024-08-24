@@ -70,15 +70,15 @@ if __name__ == '__main__':
     bs = 8
     im_names_path = 'train_names.json'
 
-    for mp_index in range(20, 24):
+    for mp_index in range(22, 30):
         m = UNet()
 
-        learning_rate = 10 ** random.uniform(-6, 1)
+        learning_rate = 10 ** random.uniform(-6, -2)
         optim = o.Adam(m.parameters(), lr=learning_rate)
 
-        a = 0.1
-        b = 1
-        c = 1
+        a = 10 ** random.uniform(-3, 0)
+        b = 10 ** random.uniform(-3, 0)
+        c = 10 ** random.uniform(-3, 0)
 
         mp = f'{mp_index:03}'
         mlflow.start_run(run_name=f'{mp}')
@@ -91,6 +91,6 @@ if __name__ == '__main__':
         mlflow.log_param('beta', b)
         mlflow.log_param('theta', c)
 
-        mlflow.log_param('notes', 'fixed loss parameters according to the paper, variable learning rates, deleted white borders')
+        mlflow.log_param('notes', 'train with pretrained densenet169 model')
         train(m, optim, lf, ec, md, mp, si, bs, im_names_path, True, a, b, c)
         mlflow.end_run()
