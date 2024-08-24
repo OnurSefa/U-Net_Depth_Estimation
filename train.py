@@ -64,21 +64,21 @@ def train(model, optimizer, loss_function, epoch_count, model_dir, model_prefix,
 
 if __name__ == '__main__':
     lf = depth_loss
-    ec = 1
+    ec = 3
     md = 'models'
     si = 80
     bs = 8
     im_names_path = 'train_names.json'
 
-    for mp_index in range(5, 100):
+    for mp_index in range(20, 24):
         m = UNet()
 
         learning_rate = 10 ** random.uniform(-6, 1)
         optim = o.Adam(m.parameters(), lr=learning_rate)
 
-        a = 10 ** random.uniform(-2, 1)
-        b = 10 ** random.uniform(-2, 1)
-        c = 10 ** random.uniform(-2, 1)
+        a = 0.1
+        b = 1
+        c = 1
 
         mp = f'{mp_index:03}'
         mlflow.start_run(run_name=f'{mp}')
@@ -91,6 +91,6 @@ if __name__ == '__main__':
         mlflow.log_param('beta', b)
         mlflow.log_param('theta', c)
 
-        mlflow.log_param('notes', 'training with multiple random hyper parameters')
+        mlflow.log_param('notes', 'fixed loss parameters according to the paper, variable learning rates, deleted white borders')
         train(m, optim, lf, ec, md, mp, si, bs, im_names_path, True, a, b, c)
         mlflow.end_run()

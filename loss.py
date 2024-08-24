@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 
 
-def depth_loss(y_true, y_pred, alpha=0., beta=0., theta=0., max_depth_val=1.):
+def depth_loss(y_true, y_pred, alpha=0., beta=0., theta=0., max_depth_val=10.):
     # point-wise depth
     l_depth = torch.mean(torch.abs(y_true - y_pred))
 

@@ -42,8 +42,8 @@ class DepthDataset(Dataset):
         if self.device:
             image = image.to(self.device)
             depth = depth.to(self.device)
-        image = image / 255
-        depth = depth / torch.max(depth)
+        image = (image / 255)[:, 10:-10, 10:-10]
+        depth = ((depth - torch.min(depth)) / (torch.max(depth) - torch.min(depth)))[:, 10:-10, 10:-10]
         if self.with_names:
             return image, depth, image_path
         return image, depth
