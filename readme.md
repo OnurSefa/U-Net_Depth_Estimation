@@ -14,6 +14,7 @@ version of this model from the pytorch library.
 ### Next steps:
 * Finding better NYU2 dataset version.
 * Adding augmentation like mentioned in the paper.
+* Inference with predicting original and mirrored image and taking the average.
 * More experiments.
 
 ## 2024.08.18 -> Update #0

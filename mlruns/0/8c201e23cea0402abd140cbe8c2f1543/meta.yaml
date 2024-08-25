@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/os/Desktop/git/U-Net_Depth_Estimation/mlruns/0/8c201e23cea0402abd140cbe8c2f1543/artifacts
+end_time: 1724533967989
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 8c201e23cea0402abd140cbe8c2f1543
+run_name: '027'
+run_uuid: 8c201e23cea0402abd140cbe8c2f1543
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1724531974143
+status: 3
+tags: []
+user_id: os

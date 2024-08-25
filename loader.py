@@ -21,10 +21,11 @@ class Normalizer:
 
 
 class DepthDataset(Dataset):
-    def __init__(self, names_path, device=None, with_names=False):
+    def __init__(self, names_path, device=None, with_names=False, normalize=True):
         self.device = device
         self.with_names = with_names
 
+        self.normalize = normalize
         self.mean_normalizers = torch.tensor([0.485, 0.456, 0.406])
         self.std_normalizers = torch.tensor([0.229, 0.224, 0.225])
 
@@ -37,7 +38,10 @@ class DepthDataset(Dataset):
     def __getitem__(self, idx):
         image_path, depth_path = self.names[idx]
         image = read_image(image_path, ImageReadMode.RGB)[:, 10:-10, 10:-10]
-        image = ((image / 255) - self.mean_normalizers[:, None, None]) / self.std_normalizers[:, None, None]
+        if self.normalize:
+            image = ((image / 255) - self.mean_normalizers[:, None, None]) / self.std_normalizers[:, None, None]
+        else:
+            image = (image / 255)
         depth_image = Image.open(depth_path).convert('L')
         depth_image = depth_image.resize((depth_image.size[0]//2, depth_image.size[1]//2))
         depth = pil_to_tensor(depth_image)[:, 5:-5, 5:-5]
