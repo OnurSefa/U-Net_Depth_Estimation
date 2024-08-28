@@ -1,7 +1,23 @@
 # U-Net Depth Estimation
 
 
-## 2024.08.24 -> Update #1
+## 2024.08.28 - Update #2
+
+* Retrieved data from [Original NYU Depth V2 Dataset](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html#raw_parts)
+* Selected a portion of it, because of the hardware and time considerations
+* Tried to use inpainting methods, didn't get good results
+
+### Current Plans
+* Adding augmentation
+* Making experiments with the prepared dataset sample (bigger than the previous dataset)
+* Fine tuning the results with the fine-grained sample of the original dataset
+
+### Next Steps
+* Inference with predicting original and mirrored image and taking the average.
+* More experiments with the inpainted images (if current experiment fails)
+
+
+## 2024.08.24 - Update #1
 
 Followed [High Quality Monocular Depth Estimation via Transfer Learning](https://arxiv.org/pdf/1812.11941)
 paper:
@@ -17,7 +33,7 @@ version of this model from the pytorch library.
 * Inference with predicting original and mirrored image and taking the average.
 * More experiments.
 
-## 2024.08.18 -> Update #0
+## 2024.08.18 - Update #0
 Used [this](https://github.com/milesial/Pytorch-UNet/blob/master/unet/unet_model.py)
 resource as a reference to implement the U-net model structure.
 
