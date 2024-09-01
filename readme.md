@@ -6,15 +6,15 @@
 * Retrieved data from [Original NYU Depth V2 Dataset](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html#raw_parts)
 * Selected a portion of it, because of the hardware and time considerations
 * Tried to use inpainting methods, didn't get good results
+  * Will train the model on the large dataset, then fine tune it on the curated dataset sample
+* Added augmentation
+  * Horizontal flip
+  * Channel swap
+* Inference with predicting original and mirrored image and taking the average
 
 ### Current Plans
-* Adding augmentation
 * Making experiments with the prepared dataset sample (bigger than the previous dataset)
-* Fine tuning the results with the fine-grained sample of the original dataset
-
-### Next Steps
-* Inference with predicting original and mirrored image and taking the average.
-* More experiments with the inpainted images (if current experiment fails)
+* Fine-tuning the results with the fine-grained sample of the original dataset
 
 
 ## 2024.08.24 - Update #1

@@ -23,7 +23,7 @@ def train(model, optimizer, loss_function, epoch_count, model_dir, model_prefix,
     model = model.to(device)
     model.train()
 
-    dataset = DepthDataset(image_names_path, device=device)
+    dataset = DepthDataset(image_names_path, device=device, mode='train')
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
 
     save_loss = 0
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     bs = 8
     im_names_path = 'train_names.json'
 
-    for mp_index in range(22, 30):
+    for mp_index in range(30, 31):
         m = UNet()
 
         learning_rate = 10 ** random.uniform(-6, -2)
