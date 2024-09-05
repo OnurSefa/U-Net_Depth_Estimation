@@ -9,15 +9,20 @@ def find_original_datapoints(in_dir, out_path):
     data_points = []
     while len(base_names) > 0:
         base_name = base_names.pop(0)
+        print(base_name)
         if os.path.exists(os.path.join(base_name, 'INDEX.txt')):
             with open(os.path.join(base_name, 'INDEX.txt'), 'r') as f:
                 lines = f.readlines()
             data_point = [None, None]
             for line in lines:
                 if 'd-' in line and '.pgm' in line:
-                    data_point[1] = os.path.join(base_name, line[:-1])
+                    current_path = os.path.join(base_name, line[:-1])
+                    if os.path.exists(current_path):
+                        data_point[1] = current_path
                 if 'r-' in line and '.ppm' in line:
-                    data_point[0] = os.path.join(base_name, line[:-1])
+                    current_path = os.path.join(base_name, line[:-1])
+                    if os.path.exists(current_path):
+                        data_point[0] = current_path
                 if None not in data_point:
                     data_points.append(data_point)
                     data_point = [None, None]
@@ -28,7 +33,7 @@ def find_original_datapoints(in_dir, out_path):
         json.dump(data_points, f, indent=6)
 
 
-def select_original_portion(in_path, out_path, ratio, random_seed=42):
+def select_original_portion(in_path, out_path, ratio, test_out_path, test_ratio, random_seed=42):
     with open(in_path, 'r') as f:
         data_points = json.load(f)
 
@@ -38,8 +43,11 @@ def select_original_portion(in_path, out_path, ratio, random_seed=42):
     random.shuffle(data_points)
     with open(out_path, 'w') as f:
         json.dump(data_points[:selected_count], f, indent=6)
+    test_selected_count = selected_count + int(round((len(data_points) * test_ratio)))
+    with open(test_out_path, 'w') as f:
+        json.dump(data_points[selected_count:test_selected_count], f, indent=6)
 
 
 if __name__ == '__main__':
-    find_original_datapoints('data/original', 'original_paths.json')
-    select_original_portion('original_paths.json', 'original_paths_portion.json', 0.5, random_seed=42)
+    find_original_datapoints('../data/depth_data/original', '../data/depth_data/original_paths.json')
+    select_original_portion('../data/depth_data/original_paths.json', '../data/depth_data/original_paths_portion.json', 0.2, '../data/depth_data/original_paths_portion_test.json', 0.02, random_seed=42)

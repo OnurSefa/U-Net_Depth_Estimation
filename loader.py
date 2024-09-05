@@ -1,6 +1,4 @@
-from torch.utils.data import Dataset, DataLoader
-import pandas as pd
-from torchvision.io import read_image, ImageReadMode
+from torch.utils.data import Dataset
 from torchvision.transforms.functional import pil_to_tensor, hflip
 import random
 import json
@@ -21,19 +19,20 @@ class DepthDataset(Dataset):
         self.std_normalizers = torch.tensor([0.229, 0.224, 0.225])
 
         with open(names_path, 'r') as f:
-            self.names = json.load(f)['names']
+            self.names = json.load(f)
 
     def __len__(self):
         return len(self.names)
 
     def __getitem__(self, idx):
         image_path, depth_path = self.names[idx]
-        image = read_image(image_path, ImageReadMode.RGB)
+        image = Image.open(image_path).convert('RGB')
+        image_original = pil_to_tensor(image).float()
         if self.normalize:
-            image = ((image / 255) - self.mean_normalizers[:, None, None]) / self.std_normalizers[:, None, None]
+            image = ((image_original / 255) - self.mean_normalizers[:, None, None]) / self.std_normalizers[:, None, None]
         else:
-            image = (image / 255)
-        depth_image = Image.open(depth_path).convert('L')
+            image = (image_original / 255)
+        depth_image = Image.open(depth_path)
         depth_image = depth_image.resize((depth_image.size[0]//2, depth_image.size[1]//2))
         depth = pil_to_tensor(depth_image)
         depth = ((depth - torch.min(depth)) / (torch.max(depth) - torch.min(depth)))
@@ -56,6 +55,7 @@ class DepthDataset(Dataset):
             return image, depth
         elif self.mode == 'inference':
             image_flipped = hflip(image)
-            return image, image_flipped, depth, depth_path
+            image_original /= 255
+            return image, image_flipped, image_original, depth, depth_path
         else:
             return None

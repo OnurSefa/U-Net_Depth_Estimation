@@ -64,33 +64,37 @@ def train(model, optimizer, loss_function, epoch_count, model_dir, model_prefix,
 
 if __name__ == '__main__':
     lf = depth_loss
-    ec = 3
-    md = 'models'
-    si = 80
+    ec = 15
+    md = '../data/depth_models'
+    si = 300
     bs = 8
-    im_names_path = 'train_names.json'
+    im_names_path = '../data/depth_data/original_paths_portion.json'
 
     for mp_index in range(30, 31):
-        m = UNet()
-
-        learning_rate = 10 ** random.uniform(-6, -2)
+        # m = UNet()
+        m = torch.load('../data/depth_models/029_2_4500.pth')
+        # learning_rate = 10 ** random.uniform(-6, -2)
+        learning_rate = 0.00033
         optim = o.Adam(m.parameters(), lr=learning_rate)
 
-        a = 10 ** random.uniform(-3, 0)
-        b = 10 ** random.uniform(-3, 0)
-        c = 10 ** random.uniform(-3, 0)
+        # a = 10 ** random.uniform(-3, 0)
+        # b = 10 ** random.uniform(-3, 0)
+        # c = 10 ** random.uniform(-3, 0)
 
+        a = 0.02139
+        b = 0.11385
+        c = 0.28639
         mp = f'{mp_index:03}'
         mlflow.start_run(run_name=f'{mp}')
         mlflow.log_param('learning rate', learning_rate)
         mlflow.log_param('batch size', bs)
         mlflow.log_param('loss function', 'depth-gradient-ssim')
         mlflow.log_param('model name', mp)
-        mlflow.log_param('model initiated', 'scratch')
+        mlflow.log_param('model initiated', '029_2_4500')
         mlflow.log_param('alpha', a)
         mlflow.log_param('beta', b)
         mlflow.log_param('theta', c)
 
-        mlflow.log_param('notes', 'train with pretrained densenet169 model')
+        mlflow.log_param('notes', 'large dataset')
         train(m, optim, lf, ec, md, mp, si, bs, im_names_path, True, a, b, c)
         mlflow.end_run()

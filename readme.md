@@ -1,19 +1,19 @@
 # U-Net Depth Estimation
 
 
-## 2024.08.28 - Update #2
+## 2024.09.06 - Update #2
 
 * Retrieved data from [Original NYU Depth V2 Dataset](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html#raw_parts)
-* Selected a portion of it, because of the hardware and time considerations
+* Selected a portion of the original dataset, because of the hardware and time constraints
 * Tried to use inpainting methods, didn't get good results
-  * Will train the model on the large dataset, then fine tune it on the curated dataset sample
 * Added augmentation
   * Horizontal flip
   * Channel swap
-* Inference with predicting original and mirrored image and taking the average
+* Trained the model on the selected portion of the dataset
+* Evaluation with predicting original and mirrored image and taking the average
 
-### Current Plans
-* Making experiments with the prepared dataset sample (bigger than the previous dataset)
+### Next Steps
+* Adding example images to the doc comparing current results - depth labels - original images 
 * Fine-tuning the results with the fine-grained sample of the original dataset
 
 
