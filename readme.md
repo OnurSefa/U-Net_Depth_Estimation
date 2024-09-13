@@ -4,7 +4,30 @@ Goal of this project is gaining hands-on experience on monocular
 relative depth estimation task following [DenseDepth](https://arxiv.org/abs/1812.11941) paper.
 The scripts and methodologies will imitate original paper using PyTorch.
 
+Current results are shown in the below table. First column show the rgb input images, second one shows the 
+ground truth depth values, and the third column shows the trained model's predictions. As it is visible from the
+table, the model is able to capture generic monocular relative depth values with conserving the object structure
+within the scene to some degree.
+
+![milestone](https://github.com/OnurSefa/U-Net_Depth_Estimation/raw/main/docs/milestone.png)
+
+The reasons why the training/fine-tuning operations stopped at this level:
+1. The main goal of this project was to gain experience in depth estimation projects and understand the significant factors affecting the problem definition from the very start. And, this goal is achieved.
+2. The project was not aimed to compete with SotA results. The model captures the monocular relative depth values and objects which is enough in this context.
+3. The hardware requirements to fine-tune the model raised concerns about the limited resource, especially regarding time. There was no need to train it more.
+
+
 ## Update #2
+
+### 2024.09.13
+
+* Further fine-tuning operations completed
+
+Below table shows the current model's predictions at the rightmost column. First column is the input rgb image, second column
+shows the grand truth depth values. Third column shows the previous best model predictions.
+
+![finetune2](https://github.com/OnurSefa/U-Net_Depth_Estimation/raw/main/docs/finetune2.png)
+
 
 ### 2024.09.08
 

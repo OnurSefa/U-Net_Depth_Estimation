@@ -200,6 +200,7 @@ if __name__ == '__main__':
     # create_comparison_table('../data/depth_models/030_14_4500.pth', '../data/depth_models/037_19_100.pth', [24, 74, 114, 167, 172], '../data/depth_data/fine_tune_test.json', '../data/depth_data/final_comparison_fine_tune_data.png')
     # create_comparison_table('../data/depth_models/030_14_4500.pth', '../data/depth_models/037_19_100.pth', [124, 132, 206, 357, 358], '../data/depth_data/original_paths_portion_test.json', '../data/depth_data/final_comparison_raw_data.png')
 
-    model_names = ["037_19_100", "040_99_140", "041_99_140", "042_99_140", "045_99_140", "046_99_140", "047_99_140"]
+    # model_names = ["040_99_140", "048_49_140", "049_49_140", "050_49_140", "051_49_140", "052_49_140"]
+    model_names = ['037_19_100', "049_49_140"]
     model_dir = "../data/depth_models"
-    create_comparison_table_multiple_model(model_names, model_dir, [24, 52, 74, 114, 167, 172, 189, 199], '../data/depth_data/fine_tune_test.json', '../data/depth_data/final_comparison_fine_tune_data_2.png')
+    create_comparison_table_multiple_model(model_names, model_dir,  [24, 52, 74, 114, 167, 172, 218], '../data/depth_data/fine_tune_test.json', '../data/depth_data/finetune2.png')

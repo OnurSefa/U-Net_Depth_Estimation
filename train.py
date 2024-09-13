@@ -64,25 +64,25 @@ def train(model, optimizer, loss_function, epoch_count, model_dir, model_prefix,
 
 if __name__ == '__main__':
     lf = depth_loss
-    ec = 100
+    ec = 50
     md = '../data/depth_models'
     si = 140
     bs = 8
     im_names_path = '../data/depth_data/fine_tune_train.json'
 
-    for mp_index in range(45, 48):
+    for mp_index in range(48, 53):
         # m = UNet()
-        m = torch.load('../data/depth_models/037_19_100.pth')
-        if mp_index == 45:
-            learning_rate = 3.8374156626590274e-05
-            a = 4.2523889554143555
-            b = 1.2242428837260741
-            c = 80.30816839128433
+        m = torch.load('../data/depth_models/040_99_140.pth')
+        if mp_index == 48:
+            learning_rate = 0.0004249580934818487
+            a = 0.0028586326519587472
+            b = 0.06462593799005685
+            c = 0.007084461892123315
         else:
-            learning_rate = 10 ** random.uniform(-6, -4)
-            a = 10 ** random.uniform(0, 2)
-            b = 10 ** random.uniform(0, 2)
-            c = 10 ** random.uniform(0, 2)
+            learning_rate = 10 ** random.uniform(-7, -3)
+            a = 10 ** random.uniform(-4, -2)
+            b = 10 ** random.uniform(-3, -1)
+            c = 10 ** random.uniform(-4, -2)
 
         optim = o.Adam(m.parameters(), lr=learning_rate)
         mp = f'{mp_index:03}'
